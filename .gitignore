@@ -166,3 +166,4 @@ backbone
 iccv_checkpoints
 modelscope.zip
 tensorboard
+fairseq

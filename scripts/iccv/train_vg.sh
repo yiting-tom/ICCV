@@ -1,22 +1,22 @@
 #!/usr/bin/env
 export MASTER_PORT=6052
-
-log_dir=../../logs/iccv
-save_dir=../../iccv_checkpoints
+root=/home/P76104419/ICCV
+log_dir=${root}/logs/iccv
+save_dir=${root}/iccv_checkpoints
 mkdir -p $log_dir $save_dir
-
-bpe_dir=../../utils/BPE
-user_dir=../../ofa_module
-
-tag="vqa-0_dif-0"
-DEVICES="1,2"
+bpe_dir=${root}/utils/BPE
+user_dir=${root}/ofa_module
+DEVICES=0,1
 NODE_NUM=2
-tensorboard_dir=../../tensorboard/iccv/${tag}
 
-data_dir=../../dataset/base64
-data=${data_dir}/"train-fus.csv",${data_dir}/"test_public.csv"
 
-restore_file=../../backbone/ofa_large.pt
+tag=vqa-P2_dif-0
+tensorboard_dir=${root}/tensorboard/iccv/${tag}
+
+data_dir=${root}/dataset/base64/vg
+data=${data_dir}/train-P2.csv,${data_dir}/test_public-P2.csv
+
+restore_file=${root}/backbone/ofa_large.pt
 selected_cols=0,4,2,3
 
 task=refcoco
@@ -42,7 +42,7 @@ log_file=${log_dir}/${tag}.log
 save_path=${save_dir}/${tag}
 mkdir -p $save_path
 
-CUDA_VISIBLE_DEVICES=${DEVICES} python3 -m torch.distributed.launch --nproc_per_node=${NODE_NUM} --master_port=${MASTER_PORT} ../../train.py \
+CUDA_VISIBLE_DEVICES=${DEVICES} python3 -m torch.distributed.launch --nproc_per_node=${NODE_NUM} --master_port=${MASTER_PORT} ${root}/train.py \
   $data \
   --selected-cols=${selected_cols} \
   --bpe-dir=${bpe_dir} \
