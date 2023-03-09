@@ -2,8 +2,7 @@
 import numpy as np
 import pandas as pd
 
-ans = pd.read_pickle("/home/P76104419/ICCV/dataset/base64/vg/test_private.pkl")['bbox'].map(lambda x: x.split(','))
-#%%
+
 def get_iou(bb1, bb2):
     # Taken from https://stackoverflow.com/a/42874377
     """
@@ -27,6 +26,10 @@ def get_iou(bb1, bb2):
     """
     bb1 = np.array(bb1).astype(float)
     bb2 = np.array(bb2).astype(float)
+    if bb1[0] > bb1[2]:
+        bb1[0], bb1[2] = bb1[2], bb1[0]
+    if bb1[1] > bb1[3]:
+        bb1[1], bb1[3] = bb1[3], bb1[1]
     assert bb1[0] < bb1[2]
     assert bb1[1] < bb1[3]
     assert bb2[0] < bb2[2]
@@ -57,14 +60,15 @@ def get_iou(bb1, bb2):
     assert iou <= 1.0
     return iou
 #%%
-tag = 1
+split = 'private'
+ans = pd.read_pickle(f"/home/P76104419/ICCV/dataset/base64/vg/test_{split}.pkl")['bbox'].map(lambda x: x.split(','))
+tag = 2
 iou = {}
 for prompt in range(1, 6):
-    filename = f'/home/P76104419/ICCV/results/vg/vqa-P{tag}_dif-0/P{prompt}_predict.json'
+    filename = f'/home/P76104419/ICCV/results/vg/vqa-P{tag}_dif-0/{split}-P{prompt}_predict.json'
     pre = pd.read_json(filename)['box']
     result = []
     for p, a in zip(pre, ans):
         result.append(get_iou(p, a))
-    iou[prompt] = sum(result) / len(result)
-# %%
-list(iou.values())
+    iou[split+str(prompt)] = sum(result) / len(result)
+print(split, '\n', list(iou.values()))
