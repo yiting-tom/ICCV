@@ -60,9 +60,9 @@ def get_iou(bb1, bb2):
     assert iou <= 1.0
     return iou
 #%%
-split = 'private'
+split = 'public'
 ans = pd.read_pickle(f"/home/P76104419/ICCV/dataset/base64/vg/test_{split}.pkl")['bbox'].map(lambda x: x.split(','))
-tag = 2
+tag = 5
 iou = {}
 for prompt in range(1, 6):
     filename = f'/home/P76104419/ICCV/results/vg/vqa-P{tag}_dif-0/{split}-P{prompt}_predict.json'
